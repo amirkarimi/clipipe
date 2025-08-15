@@ -1,0 +1,39 @@
+services:
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    volumes:
+      - redis_data:/data
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
+    networks:
+      - internal
+
+  clipipe-web:
+    restart: unless-stopped
+    build:
+      context: .
+    depends_on:
+      - redis
+    environment:
+      REDIS_URL: redis://redis:6379
+      SERVER_PORT: 8003
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10M"
+        max-file: "10"
+    networks:
+      - internal
+      - shared
+
+networks:
+  shared:
+    external: true
+  internal:
+
+volumes:
+  redis_data:

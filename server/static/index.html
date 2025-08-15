@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-950 text-gray-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Clipipe - Pipe Data Anywhere</title>
+  <!-- TailwindCSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Montserrat & Fira Mono -->
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Montserrat:wght@700&display=swap" rel="stylesheet">
+  <!-- termynal.js CSS -->
+  <link rel="stylesheet" href="./termynal.css">
+  <style>
+    body, html { font-family: 'JetBrains Mono', monospace; }
+    h1, h2, h3 { font-family: 'Montserrat', sans-serif; }
+    .hacky { font-family: 'JetBrains Mono', monospace; }
+    .gradient-text {
+      background: linear-gradient(90deg,#06b6d4,#3b82f6,#a21caf);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    [data-termynal] {
+      font-size: 1rem;
+      font-family: 'JetBrains Mono', monospace;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col items-center justify-center px-4 py-8">
+  <main class="max-w-3xl w-full bg-gray-900/80 rounded-xl shadow-2xl border border-gray-800 p-8">
+    <div class="flex items-center gap-3 mb-6">
+      <i class="fa-solid fa-terminal text-cyan-400 text-3xl"></i>
+      <h1 class="text-3xl font-bold gradient-text tracking-tight">Clipipe</h1>
+    </div>
+    <p class="mb-6 text-lg text-gray-300">
+      <span class="hacky text-gray-400">Pronunciation: <span class="text-cyan-400">Clip</span> + <span class="text-fuchsia-400">Pipe</span></span>
+    </p>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold text-cyan-300 mb-4"><i class="fa-solid fa-bolt"></i> How does it work?</h2>
+      <div class="mb-4">
+        <p class="mb-4 text-gray-400">
+          Send data from your terminal to any machine using a simple code. Data is stored temporarily and expires automatically.
+        </p>
+        <!-- Send command terminal (machine1) -->
+        <div id="termynal1" class="termynal mb-4" data-termynal>
+          <span data-ty="input" data-ty-prompt="pc$">echo "Hello World" | clipipe send</span>
+          <span data-ty>To retrieve: clipipe receive <strong>bafilo42</strong><br/>Expires in: 3600 seconds</span>
+        </div>
+        <!-- Receive command terminal (machine2) -->
+        <div id="termynal2" class="termynal" data-termynal data-ty-startDelay="6000">
+          <span data-ty="input" data-ty-prompt="laptop$">clipipe receive bafilo42</span>
+          <span data-ty>Hello World</span>
+        </div>
+        <div class="flex gap-2 text-xs text-gray-400 mt-2">
+          <span><i class="fa-brands fa-python text-yellow-400"></i> Python CLI</span>
+          <span><i class="fa-solid fa-server text-cyan-400"></i> Redis-backed server</span>
+          <span><i class="fa-solid fa-lock text-fuchsia-400"></i> Data expires</span>
+        </div>
+      </div>
+    </div>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold text-cyan-300 mb-4"><i class="fa-solid fa-terminal"></i> Install</h2>
+      <div class="bg-gray-800 rounded-lg p-4 mb-2">
+        <pre class="hacky text-gray-200"><span class="text-green-400">$</span> pipx install clipipe</pre>
+      </div>
+        Or
+      <div class="bg-gray-800 rounded-lg p-4 mb-2">
+        <pre class="hacky text-gray-200"><span class="text-green-400">$</span> uvx install clipipe</pre>
+      </div>
+    </div>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold text-cyan-300 mb-4"><i class="fa-solid fa-star"></i> Features</h2>
+      <ul class="list-disc pl-5 text-gray-300 space-y-1">
+        <li>Human-readable codes for easy sharing</li>
+        <li>Works behind NAT &amp; firewalls</li>
+        <li>Shell pipeline friendly</li>
+        <li>Open source server &amp; client</li>
+        <li>Temporary storage with auto-expiry</li>
+      </ul>
+    </div>
+    <div class="mb-8">
+      <h2 class="text-xl font-semibold text-cyan-300 mb-4"><i class="fa-solid fa-list-check"></i> Roadmap</h2>
+      <ul class="list-none pl-0 text-gray-400 space-y-1">
+        <li><i class="fa-regular fa-square"></i> Built-in end-to-end encryption</li>
+        <li><i class="fa-regular fa-square"></i> HTTP streaming</li>
+        <li><i class="fa-regular fa-square"></i> Peer-to-peer via WebRTC</li>
+      </ul>
+    </div>
+    <footer class="mt-6 text-xs text-gray-500 text-center">
+      <span class="mr-2"><i class="fa-brands fa-github"></i> <a href="https://github.com/amir/clipipe" class="underline hover:text-cyan-400">GitHub</a></span>
+      <span class="mr-2"><i class="fa-solid fa-code"></i> MIT License</span>
+      <span><i class="fa-solid fa-heart text-fuchsia-400"></i> Made for hackers by <a href="https://amirkarimi.dev" class="underline hover:text-cyan-400">Amir Karimi</a></span>
+    </footer>
+  </main>
+  <!-- include and initialise termynal.js -->
+  <script src="./termynal.js" data-termynal-container="#termynal1|#termynal2"></script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+[project]
+name = "clipipe"
+description = "Send and receive data using human-readable codes"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = ["click>=8.2.1", "requests>=2.32.4", "rich>=14.1.0"]
+dynamic = ["version"]
+
+[project.scripts]
+clipipe = "clipipe:cli"
+
+[tool.uv]
+package = true
+
+[tool.hatch.version]
+source = "vcs"
+
+[build-system]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"

@@ -1,0 +1,6 @@
+rsync-exclude.txt
+deploy
+__pycache__
+.mypy_cache
+.venv
+.git
