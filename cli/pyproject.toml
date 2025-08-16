@@ -4,7 +4,7 @@ description = "Send and receive data using human-readable codes"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["click>=8.2.1", "requests>=2.32.4", "rich>=14.1.0"]
-version = "0.1.1"
+version = "0.1.2"
 authors = [{ name = "Amir Karimi", email = "me@amirkarimi.dev" }]
 keywords = [
   "pipe",
