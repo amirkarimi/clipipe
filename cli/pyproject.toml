@@ -4,8 +4,19 @@ description = "Send and receive data using human-readable codes"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = ["click>=8.2.1", "requests>=2.32.4", "rich>=14.1.0"]
-dynamic = ["version"]
+version = "0.1.0"
 authors = [{ name = "Amir Karimi", email = "me@amirkarimi.dev" }]
+keywords = [
+  "pipe",
+  "bash",
+  "utilities",
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: POSIX",
+    "Topic :: Utilities",
+]
 
 [project.urls]
 Homepage = "https://clipipe.io"
@@ -17,9 +28,6 @@ clipipe = "clipipe:cli"
 [tool.uv]
 package = true
 
-[tool.hatch.version]
-source = "vcs"
-
 [build-system]
-requires = ["hatchling", "hatch-vcs"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
