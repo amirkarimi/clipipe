@@ -1,13 +1,14 @@
 import os
 import secrets
+from pathlib import Path
 
-import redis.asyncio as redis
+import uvicorn
 from fastapi import FastAPI, HTTPException, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import Response
 from fastapi.staticfiles import StaticFiles
-import uvicorn
 
+from storage_backend import DiskStorageBackend
 
 app = FastAPI(
     title="Clipipe Server",
@@ -23,38 +24,10 @@ app.add_middleware(
 )
 
 SERVER_PORT = os.getenv("SERVER_PORT", "8003")
-REDIS_URL = os.getenv("REDIS_URL", "redis://localhost:6379")
+STORAGE_DIR = Path(os.getenv("STORAGE_DIR", "./storage"))
 TIMEOUT_SECONDS = int(os.getenv("TIMEOUT_SECONDS", "3600"))
 
-redis_client = redis.from_url(REDIS_URL)
-
-
-def generate_human_readable_code() -> str:
-    """Generate a short, human-readable code using pronounceable patterns."""
-    vowels = "aeiou"
-    consonants = "bcdfghjklmnpqrstvwxyz"
-
-    code = ""
-    for i in range(6):
-        if i % 2 == 0:
-            code += secrets.choice(consonants)
-        else:
-            code += secrets.choice(vowels)
-
-    code += str(secrets.randbelow(100)).zfill(2)
-    return code
-
-
-async def ensure_unique_code() -> str:
-    """Generate a unique code that doesn't already exist in Redis."""
-    max_attempts = 100
-    for _ in range(max_attempts):
-        code = generate_human_readable_code()
-        exists = await redis_client.exists(f"clipipe:{code}")
-        if not exists:
-            return code
-
-    raise HTTPException(status_code=500, detail="Unable to generate unique code")
+storage_backend = DiskStorageBackend(STORAGE_DIR, TIMEOUT_SECONDS)
 
 
 @app.post("/store")
@@ -64,17 +37,8 @@ async def store_data(request: Request):
         data = await request.body()
         if not data:
             raise HTTPException(status_code=400, detail="No data provided")
-
-        code = await ensure_unique_code()
-        key = f"clipipe:{code}"
-
-        await redis_client.setex(key, TIMEOUT_SECONDS, data)
-
+        code = await storage_backend.store_data(data)
         return {"code": code, "expires_in": TIMEOUT_SECONDS}
-
-    except redis.RedisError as e:
-        print(e)
-        raise HTTPException(status_code=500, detail=f"Redis error: {str(e)}")
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
@@ -84,29 +48,20 @@ async def store_data(request: Request):
 async def retrieve_data(code: str):
     """Retrieve data by code."""
     try:
-        key = f"clipipe:{code}"
-        data = await redis_client.get(key)
-
+        data = await storage_backend.retrieve_data(code)
         if data is None:
             raise HTTPException(status_code=404, detail="Code not found or expired")
-
         return Response(content=data, media_type="application/octet-stream")
-    except redis.RedisError as e:
-        print(e)
-        raise HTTPException(status_code=500, detail=f"Redis error: {str(e)}")
     except Exception as e:
         print(e)
         raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
 
 
 @app.get("/health")
-async def health_check():
+async def health_check() -> str:
     """Health check endpoint."""
-    try:
-        await redis_client.ping()
-        return {"status": "healthy", "redis": "connected"}
-    except redis.RedisError:
-        return {"status": "unhealthy", "redis": "disconnected"}
+    return "OK"
+
 
 # Website - It should be at the end to not override other routes
 app.mount("/", StaticFiles(directory="static", html=True), name="static")

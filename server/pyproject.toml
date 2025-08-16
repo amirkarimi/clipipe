@@ -5,7 +5,7 @@ description = "Send and receive data using human-readable codes"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "aiofiles>=24.1.0",
     "fastapi[standard]>=0.116.1",
-    "redis>=6.4.0",
 ]
 

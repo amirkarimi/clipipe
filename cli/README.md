@@ -6,7 +6,7 @@ Pronunciation: _Clip + Pipe_
 
 ## How Does It Work?
 
-`clipipe` reads data from standard input (stdin) and sends it to the server (also open source) via HTTPS. The server responds with a human-readable code, which you can share with others. The server stores the data in a Redis database with an expiration time. On another machine, you can use `clipipe` to retrieve the data for the given code from the server and output it to standard output (stdout).
+`clipipe` reads data from standard input (stdin) and sends it to the server (also open source) via HTTPS. The server responds with a human-readable code, which you can share with others. The server stores the data on the server with an expiration time. On another machine, you can use `clipipe` to retrieve the data for the given code from the server and output it to standard output (stdout).
 
 ## Installation
 

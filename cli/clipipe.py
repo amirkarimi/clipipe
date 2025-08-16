@@ -129,16 +129,11 @@ def status(ctx):
             response = requests.get(f"{server_url}/health", timeout=5)
             response.raise_for_status()
 
-        health_data = response.json()
-
         table = Table(title="Server Status", box=box.ROUNDED)
         table.add_column("Component", style="cyan")
         table.add_column("Status", style="green")
 
         table.add_row("Server", "✅ online")
-        redis_status = health_data.get('redis', 'unknown')
-        icon = "✅" if redis_status == "connected" else "❌"
-        table.add_row("Redis", f"{icon} {redis_status}")
         table.add_row("URL", server_url)
 
         console.print(table)
